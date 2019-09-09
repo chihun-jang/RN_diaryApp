@@ -1,8 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View,ScrollView,FlatList,TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, ScrollView, FlatList,TouchableOpacity} from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Calendar } from 'react-native-calendars';
+
+import { AsyncStorage } from 'react-native';
 
 
 export default class  MainScreen extends React.Component {
@@ -33,40 +35,69 @@ export default class  MainScreen extends React.Component {
             ]
         }
     }
-    
+    _storeData = async () => {
+        try {
+            await AsyncStorage.setItem('@diary:state', JSON.stringify(this.state));
+        } catch (e) {
+        }
+    }
+    _getData = async () => {
+        try {
+            const mystate = await AsyncStorage.getItem('@diary:state');
+            if (mystate !== null) {
+                this.setState(JSON.parse(mystate));
+            }
+        } catch (e) {
+        }
+    };
 
    
 componentDidMount(){
+    this._getData()
     this.props.navigation.addListener(
         'didFocus',
         payload => {
             newpost = this.props.navigation.getParam('myparam')
+            signal = this.props.navigation.getParam('signal')
+
+
             if (newpost ) {
                 const PrevPosts = [...this.state.Posts]
+
                 // console.log("*********************")
                 // console.log(PrevPosts)
                 // console.log("###############")
                 // console.log(newpost)
-                this.setState({Posts: PrevPosts.concat(newpost)} )
+                this.setState({ Posts: PrevPosts.concat(newpost) }, this._storeData )
                 // console.log("%%%%%%%%%%%%%%%%")
                 // console.log(this.state.Posts)
-                console.log(this.props.navigation)
-                this.props.navigation.setParams(" ")
-                console.log(this.props.navigation)
+                // console.log(this.props.navigation)
+                // console.log(this.props.navigation)
                 this.props.navigation.navigate('MainScreen',{myparam: false })
-            }else{
-                console.log("다시실행한 증거")
             }
+            else if(signal){
+                const PrevPosts2 = [...this.state.Posts]
+                console.log(PrevPosts2)
+
+                deleteIndex = PrevPosts2.findIndex((item) => { return item.id == signal });
+                deletePost = PrevPosts2.splice(deleteIndex, 1);
+                console.log(deleteIndex)
+                console.log(deletePost)
+                this.setState({ Posts: PrevPosts2 }, this._storeData)
+                this.props.navigation.navigate('MainScreen', { signal: false })
+
+            }
+           
         }
     );
 }
         
-    _mysetting = () => {
-        console.log("cech")
+    // _mysetting = () => {
+    //     // console.log("cech")
 
-        const PrevPosts = [...this.state.Posts]
-        this.setState({ Posts: PrevPosts.concat(this.newpost) })
-    }
+    //     const PrevPosts = [...this.state.Posts]
+    //     this.setState({ Posts: PrevPosts.concat(this.newpost) })
+    // }
     
 
 

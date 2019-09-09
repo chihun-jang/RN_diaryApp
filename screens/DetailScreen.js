@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View,Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Image  } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import DetailHeader from '../components/DetailHeader'
@@ -16,14 +16,20 @@ export default class DetailScreen extends React.Component {
     }
 
     post = this.props.navigation.getParam('post')
+    
+    
+    _deletesignal = () =>{
+        this.props.navigation.navigate('MainScreen', {signal:this.post.id})
+    }
+
 
     render(){
         return (
-
+            // console.log(this.post),
             // console.log("Deatial"),
             // console.log(this.props.navigation),
             <SafeAreaView style={styles.container}>
-                <DetailHeader/>
+                <DetailHeader deleteProp={this._deletesignal}/>
                 {this.post?
                     <View >
                         <View style = {styles.detailbox}>
@@ -31,6 +37,8 @@ export default class DetailScreen extends React.Component {
                                 제목 : {this.post.title}
                             </Text>
                         </View>
+                        {this.post.imageUrl ? <Image source={{ uri: this.post.imageUrl }} style={{ width: 100, height: 100 }} /> : null}
+
                         <View style={styles.detailbox}> 
                             <Text style={styles.detailcontent}>
                                 내용 : {this.post.content}

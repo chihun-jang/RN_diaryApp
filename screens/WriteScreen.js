@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextInput, StyleSheet, Dimensions, View } from 'react-native';
+import { TextInput, StyleSheet, Dimensions, View, Image } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
@@ -46,17 +46,19 @@ export default class WriteScreen extends React.Component {
                 title: this.state.inputtitle,
                 content: this.state.inputcontent,
                 date: date,
+                imageUrl: this.state.imageUrl,
             }
             // console.log(newPost)
             this.setState(
                 {
                     inputtitle: '',
                     inputcontent: '',
+                    imageUrl: '',
                 }
             )
-            console.log("***********************")
+            // console.log("***********************")
             // console.log(newpost)
-            console.log("**********************")
+            // console.log("**********************")
             
             this.props.navigation.navigate('MainScreen',{myparam :newpost})
             // console.log(newPost)
@@ -64,7 +66,7 @@ export default class WriteScreen extends React.Component {
         }
         else{
             this.props.navigation.navigate('MainScreen')
-            console.log("이건 else")
+            // console.log("이건 else")
         }
         
     }
@@ -81,14 +83,31 @@ export default class WriteScreen extends React.Component {
         return (tyear + "-" + tmonth + "-" + tday)
         // console.log(tyear + "-" + tmonth + "-" + tday)
     } 
+
     
+    _selectImage = async() =>{
+        //안드로이드의 경우 이부분을 아예 지우고 작성해주셔야 합니다
+        //  if (Constants.platform.ios) {
+        //         const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        //         if (status !== 'granted') {
+        //             alert('Sorry, we need camera roll permissions to make this work!');
+        //         }
+        //     }
+       
+            let result = await ImagePicker.launchImageLibraryAsync({
+                allowsEditing: true,
+            });
+        this.setState({ imageUrl: result.uri });
+
+   
+}
     
     render() {
         return (
            
             <SafeAreaView style={styles.container}>
                 <View style={styles.contentContainer}>
-                    <WriteHeader saveProps={this._saveText}/>
+                    <WriteHeader saveProps={this._saveText} selectImage = {this._selectImage}/>
                     <TextInput
                         value = {this.state.inputtitle}
                         onChangeText={this._showTitle}
@@ -97,6 +116,8 @@ export default class WriteScreen extends React.Component {
                         placeholder="제목을 입력하세요"
                         style={styles.title}
                         returnKeyType="done" />
+                    {this.state.imageUrl ? <Image source={{ uri: this.state.imageUrl }} style={{ width: 100, height: 100 }} /> : null}
+
                     <TextInput
                         value={this.state.inputcontent}
                         onChangeText={this._showContent}

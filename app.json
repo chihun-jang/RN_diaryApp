@@ -11,9 +11,9 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/loading.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -23,6 +23,13 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "android": {
+      "package": "likelion.rnproject.chi_diary",
+    "icon": "./assets/logo.png",
+     "adaptiveIcon":{
+       "backgroundColor" : "#ffffff"
+     }
+    },
     "ios": {
       "supportsTablet": true
     }
